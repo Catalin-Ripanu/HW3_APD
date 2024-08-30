@@ -2,6 +2,8 @@
 
 A Project ilustrating the usefulness of MPI in Distributed Programming.
 
+## Implementation
+
 Initially, the leaders obtain their worker processes from the input file to form a special vector of vectors, namely the topology. Obviously, each Cluster object retains its own workers in the private vector of the class.
 
 Of course, the leaders send their rank so that the worker processes know how to communicate with them. Moreover, the leaders send their own worker processes to the right side and receive worker processes belonging to other leaders from the left side so that, in the end, the topology is known. Any process will display the topology when it knows it.
@@ -18,7 +20,7 @@ Towards the end, leader 0 displays the desired vector obtained with the help of 
 
 The parts related to the study of topology and vector calculation are approximately similar, a difference being the way of traversing the graph / topology. More precisely, leader 0 can only send / receive from the right side, leaders 2 and 3 from both sides, and leader 1 only from the left side. Regarding that vector, the route changes as follows: from proc 0 -> proc 1 -> proc 2 -> proc 3 to proc 0 -> proc 3 -> proc 2 -> proc 1.
 
-# Bonus
+## Bonus
 
 For the bonus, an attempt was made to isolate process 1 from the others. It can only communicate with its own worker processes.
 
