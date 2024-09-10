@@ -1,35 +1,58 @@
 # HW3_APD
 
-A Project ilustrating the usefulness of MPI in Distributed Programming.
+## Implementation Overview
 
-## Implementation
+This project demonstrates the usefulness of MPI (Message Passing Interface) in distributed programming. The implementation focuses on creating a topology of leader and worker processes, distributing work, and aggregating results.
 
-Initially, the leaders obtain their worker processes from the input file to form a special vector of vectors, namely the topology. Obviously, each Cluster object retains its own workers in the private vector of the class.
+### Key Components
 
-Of course, the leaders send their rank so that the worker processes know how to communicate with them. Moreover, the leaders send their own worker processes to the right side and receive worker processes belonging to other leaders from the left side so that, in the end, the topology is known. Any process will display the topology when it knows it.
+1. **Topology Creation**: 
+   - Leaders obtain their worker processes from an input file.
+   - A vector of vectors represents the topology.
+   - Each Cluster object maintains its own workers in a private vector.
 
-At the beginning, leader 0 generates the vector and sends it:
-- to its own worker processes.
-- to the right side.
+2. **Communication Setup**:
+   - Leaders send their rank to worker processes for communication.
+   - Leaders exchange worker process information with neighboring leaders.
 
-This method is repeated among the leaders, the final goal being to obtain the calculated vector in process 0.
+3. **Vector Processing**:
+   - Leader 0 generates the initial vector and distributes it:
+     - To its own worker processes.
+     - To the right-side leader.
+   - This process is repeated among leaders.
+   - The goal is to obtain the calculated vector in process 0.
 
-The worker processes obtain the vector and handle it based on the relationship in the document. They will pass the processed vector to their leader. Obviously, all intermediate processes will transfer the obtained vector to the left side (to reach proc. 0).
+4. **Worker Process Operations**:
+   - Receive the vector and process it based on the given relationship.
+   - Pass the processed vector back to their leader.
 
-Towards the end, leader 0 displays the desired vector obtained with the help of the 'recv()' function from MPI.
+5. **Result Aggregation**:
+   - Intermediate processes transfer obtained vectors to the left side.
+   - Leader 0 displays the final vector using the MPI 'recv()' function.
 
-The parts related to the study of topology and vector calculation are approximately similar, a difference being the way of traversing the graph / topology. More precisely, leader 0 can only send / receive from the right side, leaders 2 and 3 from both sides, and leader 1 only from the left side. Regarding that vector, the route changes as follows: from proc 0 -> proc 1 -> proc 2 -> proc 3 to proc 0 -> proc 3 -> proc 2 -> proc 1.
+### Topology and Vector Calculation
 
-## Bonus
+- The approach for studying topology and vector calculation is similar.
+- Key difference: The traversal direction of the graph/topology.
+  - Leader 0: Can only send/receive from the right side.
+  - Leaders 2 and 3: Can communicate from both sides.
+  - Leader 1: Can only communicate from the left side.
+- Vector route changes: 0 -> 1 -> 2 -> 3 becomes 0 -> 3 -> 2 -> 1.
 
-For the bonus, an attempt was made to isolate process 1 from the others. It can only communicate with its own worker processes.
+## Bonus Implementation
 
-Obviously, if leader 1 is ignored, then its children will also bear this. Given that 1 no longer participates, the rank of the current process and its number of workers are calculated in order to use the same relationship from the problem statement.
+The bonus implementation attempts to isolate process 1 from others:
 
-To determine the aforementioned, the topology studied by each participating process is traversed.
+- Process 1 can only communicate with its own worker processes.
+- Ignoring leader 1 also excludes its children from the main computation.
+- For participating processes:
+  - Calculate the current process rank and number of workers.
+  - Use the same relationship from the problem statement.
+- Determine these by traversing the topology studied by each participating process.
 
-Some references that helped with debugging:
-- https://education.molssi.org/parallel-programming/04-distributed-examples/index.html
-- https://www.open-mpi.org/faq/?category=troubleshooting
-- https://rantahar.github.io/introduction-to-mpi/aio/index.html
-- https://cplusplus.com/forum/general/282234/
+## References
+
+- [Distributed Programming Examples (MolSSI)](https://education.molssi.org/parallel-programming/04-distributed-examples/index.html)
+- [Open MPI FAQ: Troubleshooting](https://www.open-mpi.org/faq/?category=troubleshooting)
+- [Introduction to MPI](https://rantahar.github.io/introduction-to-mpi/aio/index.html)
+- [C++ Forum: MPI Discussion](https://cplusplus.com/forum/general/282234/)
